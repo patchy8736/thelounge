@@ -27,14 +27,14 @@ RUN corepack enable && \
 
 WORKDIR /app
 
-# Copy package files and install runtime dependencies only
+# Copy package files
 COPY --chown=node:node package.json yarn.lock .yarnrc.yml ./
-RUN yarn install --immutable --mode=skip-build && yarn cache clean
 
-# Copy built artifacts from builder
+# Copy built artifacts and node_modules from builder (includes compiled native modules)
 COPY --chown=node:node --from=builder /src/dist ./dist
 COPY --chown=node:node --from=builder /src/public ./public
 COPY --chown=node:node --from=builder /src/defaults ./defaults
+COPY --chown=node:node --from=builder /src/node_modules ./node_modules
 COPY --chown=node:node --from=builder /src/index.js ./
 COPY --chown=node:node --from=builder /src/client/index.html.tpl ./client/index.html.tpl
 
