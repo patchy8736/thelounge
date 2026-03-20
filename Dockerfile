@@ -29,9 +29,7 @@ WORKDIR /app
 
 # Copy package files and install runtime dependencies only
 COPY --chown=node:node package.json yarn.lock .yarnrc.yml ./
-RUN --mount=type=cache,target=/root/.yarn,target=/root/.cache \
-    yarn install --immutable && \
-    yarn cache clean
+RUN yarn install --immutable --mode=skip-build && yarn cache clean
 
 # Copy built artifacts from builder
 COPY --chown=node:node --from=builder /src/dist ./dist
