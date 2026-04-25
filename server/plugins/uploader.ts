@@ -387,7 +387,6 @@ class Uploader {
 							fileBuffer,
 							fileName || path.basename(destPath.toString())
 						);
-						form.append("id_length", "16");
 
 						// Remove local temp file
 						fs.unlinkSync(destPath);
