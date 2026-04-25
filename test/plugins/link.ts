@@ -1,12 +1,9 @@
 import path from "path";
 import {expect, assert} from "chai";
-import {fileURLToPath} from "url";
 import util from "../util.js";
 import Config from "../../server/config.js";
 import link from "../../server/plugins/irc-events/link.js";
 import type {LinkPreview} from "../../shared/types/msg.js";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe("Link plugin", function () {
 	// Increase timeout due to unpredictable I/O on CI services
@@ -28,7 +25,7 @@ Vivamus bibendum vulputate tincidunt. Sed vitae ligula felis.`;
 	beforeEach(function (done) {
 		app = util.createWebserver();
 		app.get("/real-test-image.png", function (req, res) {
-			res.sendFile(path.resolve(__dirname, "../../client/img/logo-grey-bg-120x120px.png"));
+			res.sendFile(path.resolve("client/img/logo-grey-bg-120x120px.png"));
 		});
 		this.connection = app.listen(0, "127.0.0.1", () => {
 			this.port = this.connection.address().port;

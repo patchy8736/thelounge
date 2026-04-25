@@ -2,21 +2,18 @@ import fs from "fs";
 import path from "path";
 import crypto from "crypto";
 import {expect, assert} from "chai";
-import {fileURLToPath} from "url";
 import util from "../util.js";
 import Config from "../../server/config.js";
 import storage from "../../server/plugins/storage.js";
 import link from "../../server/plugins/irc-events/link.js";
 import type {Request, Response} from "express";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 describe("Image storage", function () {
 	// Increase timeout due to unpredictable I/O on CI services
 	this.timeout(util.isRunningOnCI() ? 25000 : 5000);
 	this.slow(300);
 
-	const testImagePath = path.resolve(__dirname, "../../client/img/logo-grey-bg-120x120px.png");
+	const testImagePath = path.resolve("client/img/logo-grey-bg-120x120px.png");
 	const correctImageHash = crypto
 		.createHash("sha256")
 		.update(fs.readFileSync(testImagePath))
@@ -26,7 +23,7 @@ describe("Image storage", function () {
 		2
 	)}/${correctImageHash.substring(2, 4)}/${correctImageHash.substring(4)}.png`;
 
-	const testSvgPath = path.resolve(__dirname, "../../client/img/logo-grey-bg.svg");
+	const testSvgPath = path.resolve("client/img/logo-grey-bg.svg");
 	const correctSvgHash = crypto
 		.createHash("sha256")
 		.update(fs.readFileSync(testSvgPath))

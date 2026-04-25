@@ -10,6 +10,7 @@ import {
 class Msg {
 	from!: UserInMessage;
 	id!: number;
+	msgid?: string;
 	previews!: LinkPreview[];
 	text!: string;
 	type!: MessageType;
@@ -41,7 +42,7 @@ class Msg {
 	when!: Date;
 	whois!: WhoisData;
 	users!: string[];
-	statusmsgGroup!: string;
+	statusmsgGroup?: string;
 	params!: string[];
 	massEventSummary?: MassEventSummary;
 
