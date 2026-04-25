@@ -134,6 +134,7 @@ import LinkPreview from "./LinkPreview.vue";
 import ParsedMessage from "./ParsedMessage.vue";
 import MessageTypes from "./MessageTypes";
 import StatusmsgMarker from "./StatusmsgMarker.vue";
+import eventbus from "../js/eventbus";
 import socket from "../js/socket";
 
 import type {ClientChan, ClientMessage, ClientNetwork} from "../js/types";
@@ -238,18 +239,27 @@ export default defineComponent({
 				return;
 			}
 
-			const confirmed = window.confirm(
-				`Send !${command} for "${requestReleaseName.value}"?`
+			const channelId = props.channel.id;
+			const releaseName = requestReleaseName.value;
+
+			eventbus.emit(
+				"confirm-dialog",
+				{
+					title: "Confirm request action",
+					text: `Send !${command} for "${releaseName}"?`,
+					button: `Send !${command}`,
+				},
+				(result: boolean) => {
+					if (!result) {
+						return;
+					}
+
+					socket.emit("input", {
+						target: channelId,
+						text: `!${command} ${releaseName}`,
+					});
+				}
 			);
-
-			if (!confirmed) {
-				return;
-			}
-
-			socket.emit("input", {
-				target: props.channel.id,
-				text: `!${command} ${requestReleaseName.value}`,
-			});
 		};
 
 		return {
