@@ -142,6 +142,7 @@ import {useStore} from "../js/store";
 import {MessageType} from "../../shared/types/msg";
 import {parser as shoutboxParser} from "../js/helpers/shoutbox-bridge/parser";
 import {ChanType} from "../../shared/types/chan";
+import {cleanIrcMessage} from "../../shared/irc";
 
 MessageTypes.ParsedMessage = ParsedMessage;
 MessageTypes.LinkPreview = LinkPreview;
@@ -220,7 +221,11 @@ export default defineComponent({
 				return null;
 			}
 
-			const match = text.match(/\[Request\]\s*-\s*\[\s*\d+\s*:\]\s*(.+?)(?=\s*~\s*by\b|$)/i);
+			const cleanText = cleanIrcMessage(text);
+
+			const match = cleanText.match(
+				/\[Request\]\s*-\s*\[\s*\d+\s*:\]\s*(.+?)(?=\s*~\s*by\b|$)/i
+			);
 
 			if (!match?.[1]) {
 				return null;
