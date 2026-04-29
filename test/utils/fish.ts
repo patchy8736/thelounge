@@ -10,7 +10,7 @@ import {
 const FISH_BASE64_CHARS = "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 describe("FiSH Blowfish encryption", function () {
-		describe("fishEncrypt / fishDecrypt roundtrip", function () {
+	describe("fishEncrypt / fishDecrypt roundtrip", function () {
 		it("should encrypt then decrypt to original plaintext", function () {
 			const key = "testkey123";
 			const plaintext = "Hello, World!";
