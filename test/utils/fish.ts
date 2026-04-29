@@ -10,7 +10,7 @@ import {
 const FISH_BASE64_CHARS = "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 describe("FiSH Blowfish encryption", function () {
-	describe("fishEncrypt / fishDecrypt roundtrip", function () {
+		describe("fishEncrypt / fishDecrypt roundtrip", function () {
 		it("should encrypt then decrypt to original plaintext", function () {
 			const key = "testkey123";
 			const plaintext = "Hello, World!";
@@ -56,6 +56,15 @@ describe("FiSH Blowfish encryption", function () {
 			const plaintext = "This is a longer message that spans multiple blocks!";
 			const encrypted = fishEncrypt(plaintext, key);
 			const result = fishDecrypt(encrypted, key);
+			expect(result.status).to.equal("success");
+			expect(result.text).to.equal(plaintext);
+		});
+
+		it("should preserve umlauts and emoji in ECB mode", function () {
+			const key = "unicode-ecb";
+			const plaintext = "Grüße 🙂 äöü ß";
+			const encrypted = fishEncrypt(plaintext, key, "ecb");
+			const result = fishDecrypt(encrypted, key, "ecb");
 			expect(result.status).to.equal("success");
 			expect(result.text).to.equal(plaintext);
 		});
@@ -220,6 +229,15 @@ describe("FiSH Blowfish encryption", function () {
 			// Check that it's valid standard base64 by decoding and re-encoding
 			const decoded = Buffer.from(encrypted, "base64");
 			expect(decoded.length).to.be.greaterThan(0);
+		});
+
+		it("should preserve umlauts and emoji in CBC mode", function () {
+			const key = "unicode-cbc";
+			const plaintext = "Füße 😄 äöü ß";
+			const encrypted = fishEncrypt(plaintext, key, "cbc");
+			const result = fishDecrypt(encrypted, key, "cbc");
+			expect(result.status).to.equal("success");
+			expect(result.text).to.equal(plaintext);
 		});
 	});
 

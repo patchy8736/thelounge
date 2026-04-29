@@ -191,10 +191,21 @@ const INITIAL_S: readonly number[][] = [
 ] as const;
 
 // Utility functions
-const stringToBytes = (str: string): number[] =>
-	Array.from(str, (char) => char.charCodeAt(0) & 0xff);
+const stringToBytes = (str: string): number[] => Array.from(Buffer.from(str, "utf8"));
 
-const bytesToString = (bytes: number[]): string => String.fromCharCode(...bytes);
+const bytesToStringUTF8 = (bytes: number[]): string => Buffer.from(bytes).toString("utf8");
+
+const bytesToStringLegacy = (bytes: number[]): string => String.fromCharCode(...bytes);
+
+const bytesToString = (bytes: number[]): string => {
+	const utf8 = bytesToStringUTF8(bytes);
+
+	if (!utf8.includes("\uFFFD")) {
+		return utf8;
+	}
+
+	return bytesToStringLegacy(bytes);
+};
 
 const removeBadChars = (text: string): string => text.replace(/[\x00\x0d\x0a]/g, "");
 
