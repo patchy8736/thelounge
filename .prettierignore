@@ -52,3 +52,5 @@ yarn.lock
 # Unparseable files
 LICENSE
 scripts/git-hooks/*
+.dockerignore
+Dockerfile

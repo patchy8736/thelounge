@@ -1,0 +1,14 @@
+.git
+.github
+.gitignore
+*.md
+node_modules
+coverage
+.nyc_output
+.eslintrc.yml
+.prettierrc.yml
+.stylelintrc.yml
+test
+scripts
+.DS_Store
+Thumbs.db
