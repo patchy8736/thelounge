@@ -377,6 +377,7 @@ export default defineComponent({
 			messageActions,
 			replyToMessage,
 			requestReleaseName,
+			sendRequestCommand,
 		};
 	},
 });
