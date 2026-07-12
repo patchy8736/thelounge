@@ -402,6 +402,7 @@ export default defineComponent({
 			parentInHistory,
 			isAction,
 			requestReleaseName,
+			sendRequestCommand,
 			startReply,
 			scrollToParent,
 			onTouchStart,
