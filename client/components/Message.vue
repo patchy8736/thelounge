@@ -204,6 +204,7 @@ import LinkPreview from "./LinkPreview.vue";
 import ParsedMessage from "./ParsedMessage.vue";
 import MessageTypes from "./MessageTypes";
 import StatusmsgMarker from "./StatusmsgMarker.vue";
+import socket from "../js/socket";
 import MessageBadges from "./MessageBadges.vue";
 
 import type {ClientChan, ClientMessage, ClientNetwork} from "../js/types";
