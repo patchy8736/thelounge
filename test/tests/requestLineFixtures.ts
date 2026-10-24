@@ -7,7 +7,7 @@ export const siteALine =
 	"[1] Haps.2025.MULTI.VFF.1080p.WEB.AC3.5.1.H265-GRP von nick (23.10. 20:11)";
 export const siteAPattern = "^\\[\\s*\\d+\\.?\\]\\s+(.+?)\\s+von\\s+";
 
-// Site A lines in the wild may carry a bot prefix before the entry number;
+// Site A lines in the wild may carry a preamble before the entry number;
 // the pattern keeps it non-capturing so the release name stays group 1.
 export const siteAPrefixedLine =
 	"[REQUEST] :: [4] Haps.2025.MULTI.VFF.1080p.WEB.AC3.5.1.H265-GRP von nick (24.10. 14:31)";

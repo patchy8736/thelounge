@@ -293,7 +293,7 @@ the server tab on new connection"
 						<span
 							class="tooltipped tooltipped-ne tooltipped-no-delay"
 							aria-label="Optional regex matching this network's request lines.
-First capture group = release name. Keep any bot prefix non-capturing, e.g. (?:...)"
+First capture group = release name. Keep any preamble before the entry number non-capturing, e.g. (?:...)"
 						>
 							<button class="extra-help" />
 						</span>

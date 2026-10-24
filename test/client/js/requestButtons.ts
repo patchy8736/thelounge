@@ -59,7 +59,7 @@ describe("Request command buttons", () => {
 		expect(wrapper.findAll(".request-action-button")).to.have.lengthOf(3);
 	});
 
-	it("render for a site A request line carrying a bot prefix when the network pattern matches", () => {
+	it("render for a site A request line carrying a preamble when the network pattern matches", () => {
 		const wrapper = mountOnNetwork(siteAPrefixedLine, siteAPrefixedPattern);
 
 		expect(wrapper.findAll(".request-action-button")).to.have.lengthOf(3);

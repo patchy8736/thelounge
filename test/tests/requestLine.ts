@@ -90,7 +90,7 @@ describe("Network request pattern", () => {
 		);
 	});
 
-	it("extracts the release name when the line carries a bot prefix before the number", () => {
+	it("extracts the release name when the line carries a preamble before the number", () => {
 		expect(
 			releaseNameForNetwork(siteAPrefixedLine, {requestPattern: siteAPrefixedPattern})
 		).to.equal("Haps.2025.MULTI.VFF.1080p.WEB.AC3.5.1.H265-GRP");
