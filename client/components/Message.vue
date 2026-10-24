@@ -168,7 +168,7 @@ import {useStore} from "../js/store";
 import {MessageType} from "../../shared/types/msg";
 import {parser as shoutboxParser} from "../js/helpers/shoutbox-bridge/parser";
 import {ChanType} from "../../shared/types/chan";
-import {cleanIrcMessage} from "../../shared/irc";
+import {extractReleaseName, legacyRequestLinePattern} from "../js/helpers/requestLine";
 
 MessageTypes.ParsedMessage = ParsedMessage;
 MessageTypes.LinkPreview = LinkPreview;
@@ -269,25 +269,7 @@ export default defineComponent({
 				return null;
 			}
 
-			const text = prettyMessage.value.text;
-
-			if (!text) {
-				return null;
-			}
-
-			const cleanText = cleanIrcMessage(text);
-
-			const match = cleanText.match(
-				/\[Request\]\s*-\s*\[\s*\d+\s*:\]\s*(.+?)(?=\s*~\s*by\b|$)/i
-			);
-
-			if (!match?.[1]) {
-				return null;
-			}
-
-			const releaseName = match[1].trim();
-
-			return releaseName.length > 0 ? releaseName : null;
+			return extractReleaseName(prettyMessage.value.text, legacyRequestLinePattern);
 		});
 
 		const startReply = () => {
