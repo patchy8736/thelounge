@@ -286,6 +286,38 @@ the server tab on new connection"
 				</div>
 			</template>
 
+			<template v-if="defaults.uuid">
+				<div class="connect-row">
+					<label for="connect:requestPattern">
+						Request line pattern
+						<span
+							class="tooltipped tooltipped-ne tooltipped-no-delay"
+							aria-label="Optional regex matching this network's request lines.
+First capture group = release name"
+						>
+							<button class="extra-help" />
+						</span>
+					</label>
+					<div class="input-wrap">
+						<input
+							id="connect:requestPattern"
+							v-model.trim="defaults.requestPattern"
+							autocomplete="off"
+							class="input"
+							name="requestPattern"
+						/>
+						<div v-if="requestPatternError" class="error" role="alert">
+							{{ requestPatternError }}
+						</div>
+						<div v-else class="request-pattern-hint">
+							Example patterns (first capture group = release name):
+							<code>^\[\s*\d+\.?\]\s+(.+?)\s+von\s+</code>
+							<code>^\[\s*\d+\.?\]\s+(.+?)\s+by\s+</code>
+						</div>
+					</div>
+				</div>
+			</template>
+
 			<template v-if="config?.fishEnabled">
 				<h2>FiSH (Blowfish)</h2>
 				<div class="connect-row">
@@ -663,7 +695,7 @@ Example: NickServ, *Serv, #plainchannel"
 			</template>
 
 			<div>
-				<button type="submit" class="btn" :disabled="disabled ? true : false">
+				<button type="submit" class="btn" :disabled="disabled || !!requestPatternError">
 					<template v-if="defaults.uuid">Save network</template>
 					<template v-else>Connect</template>
 				</button>
@@ -697,6 +729,23 @@ Example: NickServ, *Serv, #plainchannel"
 #connect .connect-sasl-external pre {
 	margin: 0;
 	user-select: text;
+}
+
+#connect .request-pattern-hint {
+	font-size: 12px;
+	margin-top: 5px;
+	user-select: text;
+	word-break: break-all;
+}
+
+#connect .request-pattern-hint code {
+	display: block;
+}
+
+#connect .error {
+	color: #e74c3c;
+	margin-top: 5px;
+	font-size: 14px;
 }
 
 /* FiSH Keys section styles */
@@ -1120,7 +1169,26 @@ export default defineComponent({
 			encodingEntries.value.splice(index, 1);
 		};
 
+		const requestPatternError = computed(() => {
+			const pattern = props.defaults.requestPattern;
+
+			if (!pattern) {
+				return "";
+			}
+
+			try {
+				new RegExp(pattern);
+				return "";
+			} catch {
+				return "Not a valid regular expression — fix or clear the pattern to save.";
+			}
+		});
+
 		const onSubmit = (event: Event) => {
+			if (requestPatternError.value) {
+				return;
+			}
+
 			const formData = new FormData(event.target as HTMLFormElement);
 			const data: Partial<ClientNetwork> = {};
 
@@ -1159,6 +1227,7 @@ export default defineComponent({
 			encodingMapValue,
 			addEncodingEntry,
 			removeEncodingEntry,
+			requestPatternError,
 		};
 	},
 });
