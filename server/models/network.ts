@@ -94,6 +94,8 @@ export type NetworkConfig = {
 	ftpPassword: string;
 	ftpTls: boolean;
 	ftpAutoInvite: boolean;
+	// Request pattern: client-side regex matching request lines (ADR 0001)
+	requestPattern?: string;
 };
 
 // Form data coming from network create/edit forms
@@ -135,6 +137,7 @@ export type NetworkFormData = {
 	ftpPassword?: string;
 	ftpTls?: boolean;
 	ftpAutoInvite?: boolean;
+	requestPattern?: string;
 };
 
 class Network {
@@ -181,6 +184,10 @@ class Network {
 	ftpPassword?: string;
 	ftpTls?: boolean;
 	ftpAutoInvite?: boolean;
+
+	// Request pattern: regex matching request lines, first capture group is the
+	// release name; matched client-side (ADR 0001)
+	requestPattern?: string;
 
 	// Per-channel/nick encoding map: channel/nick (lowercase) -> encoding
 	encodingMap?: Record<string, string>;
@@ -271,6 +278,9 @@ class Network {
 			ftpPassword: "",
 			ftpTls: false,
 			ftpAutoInvite: false,
+
+			// Request pattern default
+			requestPattern: "",
 
 			// Encoding defaults
 			encodingMap: {},
@@ -728,6 +738,12 @@ class Network {
 			this.ftpAutoInvite = !!args.ftpAutoInvite;
 		}
 
+		// Request pattern: only update when provided, so form edits that omit
+		// it do not wipe a pattern configured out of band
+		if (Object.prototype.hasOwnProperty.call(args, "requestPattern")) {
+			this.requestPattern = Helper.toTrimmedString(args.requestPattern || "");
+		}
+
 		// Sync lobby channel name
 		this.getLobby().name = this.name;
 
@@ -818,6 +834,7 @@ class Network {
 			uuid: this.uuid,
 			name: this.name,
 			nick: this.nick,
+			requestPattern: this.requestPattern,
 			serverOptions: this.serverOptions,
 			status: this.getNetworkStatus(),
 			channels: this.channels.map((channel) =>
@@ -949,6 +966,9 @@ class Network {
 		data.ftpAutoInvite = this.ftpAutoInvite || false;
 		data.ftpPassword = this.ftpPassword || "";
 
+		// Include request pattern for editing UI
+		data.requestPattern = this.requestPattern || "";
+
 		// Include encoding map for editing UI
 		data.encodingMap = {...(this.encodingMap || {})};
 
@@ -1000,6 +1020,9 @@ class Network {
 
 			// Encoding persistence
 			"encodingMap",
+
+			// Request pattern persistence
+			"requestPattern",
 		]) as Network;
 
 		// Encrypt credentials at rest when THE_LOUNGE_SECRET is configured

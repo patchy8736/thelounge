@@ -168,7 +168,7 @@ import {useStore} from "../js/store";
 import {MessageType} from "../../shared/types/msg";
 import {parser as shoutboxParser} from "../js/helpers/shoutbox-bridge/parser";
 import {ChanType} from "../../shared/types/chan";
-import {extractReleaseName, legacyRequestLinePattern} from "../js/helpers/requestLine";
+import {releaseNameForNetwork} from "../js/helpers/requestLine";
 
 MessageTypes.ParsedMessage = ParsedMessage;
 MessageTypes.LinkPreview = LinkPreview;
@@ -269,7 +269,7 @@ export default defineComponent({
 				return null;
 			}
 
-			return extractReleaseName(prettyMessage.value.text, legacyRequestLinePattern);
+			return releaseNameForNetwork(prettyMessage.value.text, props.network);
 		});
 
 		const startReply = () => {

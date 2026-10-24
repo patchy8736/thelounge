@@ -1,6 +1,6 @@
 import {expect} from "chai";
 
-import {extractReleaseName} from "../../client/js/helpers/requestLine";
+import {extractReleaseName, releaseNameForNetwork} from "../../client/js/helpers/requestLine";
 
 // The format the feature originally shipped with. The client still uses it
 // today; the per-network pattern replaces it in ticket 04. Kept here as
@@ -64,5 +64,43 @@ describe("Request line release name extraction", () => {
 				siteB
 			)
 		).to.equal("fill.for.last.pred.SCENEGRP");
+	});
+});
+
+describe("Network request pattern", () => {
+	const legacyLine = "[Request] - [7:] Legacy.Release ~ by requester";
+	const siteALine = "[1] Haps.2025.MULTI.VFF.1080p.WEB.AC3.5.1.H265-GRP von nick (23.10. 20:11)";
+	const siteBLine =
+		"[  2.] Some.Release.2015.PAL.FULL.MULTi.DVDR-GRP by nick on 2026-08-03 @ 00:25";
+	const siteAPattern = "^\\[\\s*\\d+\\.?\\]\\s+(.+?)\\s+von\\s+";
+	const siteBPattern = "^\\[\\s*\\d+\\.?\\]\\s+(.+?)\\s+by\\s+";
+
+	it("matches with a per-network pattern (site A shape)", () => {
+		expect(releaseNameForNetwork(siteALine, {requestPattern: siteAPattern})).to.equal(
+			"Haps.2025.MULTI.VFF.1080p.WEB.AC3.5.1.H265-GRP"
+		);
+	});
+
+	it("matches with a per-network pattern (site B shape)", () => {
+		expect(releaseNameForNetwork(siteBLine, {requestPattern: siteBPattern})).to.equal(
+			"Some.Release.2015.PAL.FULL.MULTi.DVDR-GRP"
+		);
+	});
+
+	it("a set pattern is authoritative: non-matching lines get no release name", () => {
+		expect(releaseNameForNetwork(legacyLine, {requestPattern: siteAPattern})).to.equal(null);
+		expect(releaseNameForNetwork("chat", {requestPattern: siteAPattern})).to.equal(null);
+	});
+
+	it("falls back to the legacy format when no pattern is set", () => {
+		expect(releaseNameForNetwork(legacyLine, {})).to.equal("Legacy.Release");
+		expect(releaseNameForNetwork(siteALine, {})).to.equal(null);
+	});
+
+	it("falls back to the legacy format when the stored pattern is invalid, without throwing", () => {
+		expect(releaseNameForNetwork(legacyLine, {requestPattern: "[unclosed"})).to.equal(
+			"Legacy.Release"
+		);
+		expect(releaseNameForNetwork(siteALine, {requestPattern: "[unclosed"})).to.equal(null);
 	});
 });

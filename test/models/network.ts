@@ -167,6 +167,7 @@ describe("Network", function () {
 				ftpPort: 21,
 				ftpTls: false,
 				ftpUsername: "",
+				requestPattern: "",
 			});
 		});
 
@@ -452,6 +453,34 @@ describe("Network", function () {
 				"/whois test",
 			]);
 		});
+
+		it("should update requestPattern when the form provides it", function () {
+			const network = new Network() as NetworkWithIrcFramework;
+			const editClient = {
+				emit() {},
+				save() {},
+			} as Client;
+			const pattern = "^\\[\\s*\\d+\\.?\\]\\s+(.+?)\\s+von\\s+";
+
+			network.edit(editClient, {requestPattern: pattern});
+
+			expect(network.requestPattern).to.equal(pattern);
+			expect(network.getFilteredClone().requestPattern).to.equal(pattern);
+		});
+
+		it("should keep requestPattern when the form omits it", function () {
+			const network = new Network({
+				requestPattern: "^\\[",
+			} as Partial<Network>) as NetworkWithIrcFramework;
+			const editClient = {
+				emit() {},
+				save() {},
+			} as Client;
+
+			network.edit(editClient, {nick: "newNick"});
+
+			expect(network.requestPattern).to.equal("^\\[");
+		});
 	});
 
 	describe("#getFilteredClone(lastActiveChannel, lastMessage)", function () {
@@ -472,7 +501,15 @@ describe("Network", function () {
 
 			expect(clone)
 				.to.be.an("object")
-				.that.has.all.keys("channels", "status", "nick", "name", "serverOptions", "uuid");
+				.that.has.all.keys(
+					"channels",
+					"status",
+					"nick",
+					"name",
+					"requestPattern",
+					"serverOptions",
+					"uuid"
+				);
 
 			expect(clone.status).to.be.an("object").that.has.all.keys("connected", "secure");
 		});
