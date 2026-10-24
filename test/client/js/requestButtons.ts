@@ -13,6 +13,8 @@ import {
 	legacyRequestLine,
 	siteALine,
 	siteAPattern,
+	siteAPrefixedLine,
+	siteAPrefixedPattern,
 	siteBLine,
 	siteBPattern,
 } from "../../tests/requestLineFixtures";
@@ -53,6 +55,12 @@ function mountOnNetwork(text: string, requestPattern?: string, chan: ClientChan 
 describe("Request command buttons", () => {
 	it("render for a site A request line when the network pattern matches", () => {
 		const wrapper = mountOnNetwork(siteALine, siteAPattern);
+
+		expect(wrapper.findAll(".request-action-button")).to.have.lengthOf(3);
+	});
+
+	it("render for a site A request line carrying a bot prefix when the network pattern matches", () => {
+		const wrapper = mountOnNetwork(siteAPrefixedLine, siteAPrefixedPattern);
 
 		expect(wrapper.findAll(".request-action-button")).to.have.lengthOf(3);
 	});

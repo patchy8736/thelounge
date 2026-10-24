@@ -293,7 +293,7 @@ the server tab on new connection"
 						<span
 							class="tooltipped tooltipped-ne tooltipped-no-delay"
 							aria-label="Optional regex matching this network's request lines.
-First capture group = release name"
+First capture group = release name. Keep any bot prefix non-capturing, e.g. (?:...)"
 						>
 							<button class="extra-help" />
 						</span>
@@ -312,6 +312,7 @@ First capture group = release name"
 						<div v-else class="request-pattern-hint">
 							Example patterns (first capture group = release name):
 							<code>^\[\s*\d+\.?\]\s+(.+?)\s+von\s+</code>
+							<code>^(?:\[REQUEST\]\s*::\s*)?\[\s*\d+\.?\]\s+(.+?)\s+von\s+</code>
 							<code>^\[\s*\d+\.?\]\s+(.+?)\s+by\s+</code>
 						</div>
 					</div>

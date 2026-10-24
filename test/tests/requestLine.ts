@@ -1,7 +1,14 @@
 import {expect} from "chai";
 
 import {extractReleaseName, releaseNameForNetwork} from "../../client/js/helpers/requestLine";
-import {siteALine, siteAPattern, siteBLine, siteBPattern} from "./requestLineFixtures";
+import {
+	siteALine,
+	siteAPattern,
+	siteAPrefixedLine,
+	siteAPrefixedPattern,
+	siteBLine,
+	siteBPattern,
+} from "./requestLineFixtures";
 
 // The format the feature originally shipped with, removed from the client in
 // ADR 0001's contract phase. Kept as reference data: extractReleaseName is
@@ -81,6 +88,12 @@ describe("Network request pattern", () => {
 		expect(releaseNameForNetwork(siteBLine, {requestPattern: siteBPattern})).to.equal(
 			"Some.Release.2015.PAL.FULL.MULTi.DVDR-GRP"
 		);
+	});
+
+	it("extracts the release name when the line carries a bot prefix before the number", () => {
+		expect(
+			releaseNameForNetwork(siteAPrefixedLine, {requestPattern: siteAPrefixedPattern})
+		).to.equal("Haps.2025.MULTI.VFF.1080p.WEB.AC3.5.1.H265-GRP");
 	});
 
 	it("a set pattern is authoritative: non-matching lines get no release name", () => {
