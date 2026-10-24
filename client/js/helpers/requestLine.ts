@@ -1,5 +1,19 @@
 import {cleanIrcMessage} from "../../../shared/irc";
 
+// Compiles the network's stored Request pattern; null when unset or not a
+// valid regular expression (fail-safe: callers treat null as feature off).
+export function compileRequestPattern(pattern: string | undefined): RegExp | null {
+	if (!pattern) {
+		return null;
+	}
+
+	try {
+		return new RegExp(pattern);
+	} catch {
+		return null;
+	}
+}
+
 // Returns the Release name from a Request line matched by the given pattern
 // (first capture group), or null when the line is not a request line.
 export function extractReleaseName(text: string | undefined, pattern: RegExp): string | null {
@@ -28,14 +42,11 @@ export function releaseNameForNetwork(
 	text: string | undefined,
 	network: {requestPattern?: string}
 ): string | null {
-	if (!network.requestPattern) {
+	const pattern = compileRequestPattern(network.requestPattern);
+
+	if (!pattern) {
 		return null;
 	}
 
-	try {
-		return extractReleaseName(text, new RegExp(network.requestPattern));
-	} catch {
-		// Invalid stored pattern: feature silently off (ADR 0001)
-		return null;
-	}
+	return extractReleaseName(text, pattern);
 }

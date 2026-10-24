@@ -289,7 +289,7 @@ the server tab on new connection"
 			<template v-if="defaults.uuid">
 				<div class="connect-row">
 					<label for="connect:requestPattern">
-						Request line pattern
+						Request pattern
 						<span
 							class="tooltipped tooltipped-ne tooltipped-no-delay"
 							aria-label="Optional regex matching this network's request lines.
@@ -880,6 +880,7 @@ import SidebarToggle from "./SidebarToggle.vue";
 import {defineComponent, nextTick, PropType, ref, watch, computed} from "vue";
 import {useStore} from "../js/store";
 import {ClientNetwork} from "../js/types";
+import {compileRequestPattern} from "../js/helpers/requestLine";
 
 export type NetworkFormDefaults = Partial<ClientNetwork> & {
 	join?: string;
@@ -1172,16 +1173,11 @@ export default defineComponent({
 		const requestPatternError = computed(() => {
 			const pattern = props.defaults.requestPattern;
 
-			if (!pattern) {
+			if (!pattern || compileRequestPattern(pattern)) {
 				return "";
 			}
 
-			try {
-				new RegExp(pattern);
-				return "";
-			} catch {
-				return "Not a valid regular expression — fix or clear the pattern to save.";
-			}
+			return "Not a valid regular expression — fix or clear the pattern to save.";
 		});
 
 		const onSubmit = (event: Event) => {

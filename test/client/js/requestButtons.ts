@@ -9,6 +9,13 @@ import {MessageType} from "../../../shared/types/msg";
 import type {ClientChan, ClientMessage, ClientNetwork} from "../../../client/js/types";
 import eventbus from "../../../client/js/eventbus";
 import socket from "../../../client/js/socket";
+import {
+	legacyRequestLine,
+	siteALine,
+	siteAPattern,
+	siteBLine,
+	siteBPattern,
+} from "../../tests/requestLineFixtures";
 
 const network = {name: "TestNet"} as ClientNetwork;
 const channel = {type: ChanType.CHANNEL, id: 1} as ClientChan;
@@ -34,13 +41,6 @@ function mountMessage(text: string, chan: ClientChan, net: ClientNetwork = netwo
 	});
 }
 
-// The format the feature originally shipped with, removed in ADR 0001's
-// contract phase: kept here only to pin that it no longer triggers buttons.
-const legacyRequestLine = "[Request] - [1:] Some.Release.2025.1080p ~ by requester";
-
-const siteAPattern = "^\\[\\s*\\d+\\.?\\]\\s+(.+?)\\s+von\\s+";
-const siteALine = "[1] Haps.2025.MULTI.VFF.1080p.WEB.AC3.5.1.H265-GRP von nick (23.10. 20:11)";
-
 function mountOnNetwork(text: string, requestPattern?: string, chan: ClientChan = channel) {
 	const patternedNetwork = {
 		name: "TestNet",
@@ -58,10 +58,7 @@ describe("Request command buttons", () => {
 	});
 
 	it("render for a site B request line when the network pattern matches", () => {
-		const wrapper = mountOnNetwork(
-			"[  2.] Some.Release.2015.PAL.FULL.MULTi.DVDR-GRP by nick on 2026-08-03 @ 00:25",
-			"^\\[\\s*\\d+\\.?\\]\\s+(.+?)\\s+by\\s+"
-		);
+		const wrapper = mountOnNetwork(siteBLine, siteBPattern);
 
 		expect(wrapper.findAll(".request-action-button")).to.have.lengthOf(3);
 	});

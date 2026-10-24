@@ -1,6 +1,7 @@
 import {expect} from "chai";
 
 import {extractReleaseName, releaseNameForNetwork} from "../../client/js/helpers/requestLine";
+import {siteALine, siteAPattern, siteBLine, siteBPattern} from "./requestLineFixtures";
 
 // The format the feature originally shipped with, removed from the client in
 // ADR 0001's contract phase. Kept as reference data: extractReleaseName is
@@ -56,7 +57,7 @@ describe("Request line release name extraction", () => {
 	});
 
 	it("uses whatever pattern it is given", () => {
-		const siteB = /^\[\s*\d+\.?\]\s+(.+?)\s+by\s+/;
+		const siteB = new RegExp(siteBPattern);
 
 		expect(
 			extractReleaseName(
@@ -69,11 +70,6 @@ describe("Request line release name extraction", () => {
 
 describe("Network request pattern", () => {
 	const legacyLine = "[Request] - [7:] Legacy.Release ~ by requester";
-	const siteALine = "[1] Haps.2025.MULTI.VFF.1080p.WEB.AC3.5.1.H265-GRP von nick (23.10. 20:11)";
-	const siteBLine =
-		"[  2.] Some.Release.2015.PAL.FULL.MULTi.DVDR-GRP by nick on 2026-08-03 @ 00:25";
-	const siteAPattern = "^\\[\\s*\\d+\\.?\\]\\s+(.+?)\\s+von\\s+";
-	const siteBPattern = "^\\[\\s*\\d+\\.?\\]\\s+(.+?)\\s+by\\s+";
 
 	it("matches with a per-network pattern (site A shape)", () => {
 		expect(releaseNameForNetwork(siteALine, {requestPattern: siteAPattern})).to.equal(
