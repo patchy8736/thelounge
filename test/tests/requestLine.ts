@@ -2,9 +2,9 @@ import {expect} from "chai";
 
 import {extractReleaseName, releaseNameForNetwork} from "../../client/js/helpers/requestLine";
 
-// The format the feature originally shipped with. The client still uses it
-// today; the per-network pattern replaces it in ticket 04. Kept here as
-// reference data so the test pins the helper's behavior independently.
+// The format the feature originally shipped with, removed from the client in
+// ADR 0001's contract phase. Kept as reference data: extractReleaseName is
+// generic and these cases pin its trimming, cleaning and null behavior.
 const legacyPattern = /\[Request\]\s*-\s*\[\s*\d+\s*:\]\s*(.+?)(?=\s*~\s*by\b|$)/i;
 
 describe("Request line release name extraction", () => {
@@ -92,15 +92,13 @@ describe("Network request pattern", () => {
 		expect(releaseNameForNetwork("chat", {requestPattern: siteAPattern})).to.equal(null);
 	});
 
-	it("falls back to the legacy format when no pattern is set", () => {
-		expect(releaseNameForNetwork(legacyLine, {})).to.equal("Legacy.Release");
+	it("no pattern set: feature off, the removed legacy format matches nothing", () => {
+		expect(releaseNameForNetwork(legacyLine, {})).to.equal(null);
 		expect(releaseNameForNetwork(siteALine, {})).to.equal(null);
 	});
 
-	it("falls back to the legacy format when the stored pattern is invalid, without throwing", () => {
-		expect(releaseNameForNetwork(legacyLine, {requestPattern: "[unclosed"})).to.equal(
-			"Legacy.Release"
-		);
+	it("invalid stored pattern: feature off, without throwing", () => {
+		expect(releaseNameForNetwork(legacyLine, {requestPattern: "[unclosed"})).to.equal(null);
 		expect(releaseNameForNetwork(siteALine, {requestPattern: "[unclosed"})).to.equal(null);
 	});
 });
