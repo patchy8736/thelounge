@@ -471,7 +471,7 @@ describe("Network", function () {
 		it("should keep requestPattern when the form omits it", function () {
 			const network = new Network({
 				requestPattern: "^\\[",
-			} as Partial<Network>) as NetworkWithIrcFramework;
+			});
 			const editClient = {
 				emit() {},
 				save() {},
