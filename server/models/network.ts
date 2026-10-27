@@ -209,6 +209,10 @@ class Network {
 	chanCache!: Chan[];
 	ignoreList!: IgnoreList;
 	muteList!: string[];
+
+	isMuted(nick: string) {
+		return this.muteList.some((muted) => muted.toLowerCase() === nick.toLowerCase());
+	}
 	keepNick!: string | null;
 
 	status!: NetworkStatus;

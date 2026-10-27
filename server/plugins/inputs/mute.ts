@@ -47,8 +47,6 @@ const input: PluginInputHandler = function (network, chan, cmd, args) {
 		return;
 	}
 
-	// shortcut: user mutes are stored and synced to the client but not yet
-	// enforced (no highlight suppression); enforcement is the next ticket
 	// User mute listing: takes precedence over nick/channel resolution
 	if (args[0].toLowerCase() === "list" && args[1]?.toLowerCase() === "users") {
 		const text =

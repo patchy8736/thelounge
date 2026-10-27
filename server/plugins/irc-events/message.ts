@@ -240,6 +240,10 @@ export default <IrcEventHandler>function (this: Client, irc, network) {
 			from.isBot = true;
 		}
 
+		// User mutes are enforced only in channels: a muted sender's channel
+		// messages are never highlights (queries stay exempt)
+		const senderMuted = chan.type === ChanType.CHANNEL && network.isMuted(data.nick);
+
 		// msg is constructed down here because `from` is being copied in the constructor
 		const msg = new Msg({
 			type: data.type,
@@ -265,7 +269,7 @@ export default <IrcEventHandler>function (this: Client, irc, network) {
 				msg.replyToText = cleanReplyToText?.substring(0, 200);
 
 				// Replies to our own messages should highlight like a mention
-				if (parentMsg.self && !msg.self) {
+				if (parentMsg.self && !msg.self && !senderMuted) {
 					msg.highlight = true;
 				}
 			}
@@ -284,7 +288,7 @@ export default <IrcEventHandler>function (this: Client, irc, network) {
 
 		// Self messages in channels are never highlighted
 		// Non-self messages are highlighted as soon as the nick is detected
-		if (!msg.highlight && !msg.self) {
+		if (!msg.highlight && !msg.self && !senderMuted) {
 			msg.highlight = network.highlightRegex?.test(data.message);
 
 			// If we still don't have a highlight, test against custom highlights if there's any
