@@ -465,6 +465,38 @@ export function generateUserContextMenu(
 		},
 	];
 
+	// Mute only makes sense in a channel: the command resolves the nick
+	// against the current channel's user list, and it is never yourself
+	const canMute =
+		channel.type === ChanType.CHANNEL && user.nick.toLowerCase() !== network.nick.toLowerCase();
+	const isMuted = () =>
+		(network.muteList ?? []).some((m) => m.toLowerCase() === user.nick.toLowerCase());
+
+	if (canMute) {
+		items.push({
+			label: isMuted() ? "Unmute" : "Mute",
+			type: "item",
+			class: "mute",
+			action() {
+				const list = network.muteList ?? (network.muteList = []);
+				const idx = list.findIndex((m) => m.toLowerCase() === user.nick.toLowerCase());
+				const muted = idx !== -1;
+
+				// Optimistic: the server is the source of truth on next init
+				if (muted) {
+					list.splice(idx, 1);
+				} else {
+					list.push(user.nick);
+				}
+
+				socket.emit("input", {
+					target: channel.id,
+					text: (muted ? "/unmute " : "/mute ") + user.nick,
+				});
+			},
+		});
+	}
+
 	// Bail because we're in a query or we don't have a special mode.
 	if (!currentChannelUser.modes || currentChannelUser.modes.length < 1) {
 		return items;
