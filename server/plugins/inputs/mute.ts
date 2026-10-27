@@ -47,6 +47,79 @@ const input: PluginInputHandler = function (network, chan, cmd, args) {
 		return;
 	}
 
+	// shortcut: user mutes are stored and synced to the client but not yet
+	// enforced (no highlight suppression); enforcement is the next ticket
+	// User mute listing: takes precedence over nick/channel resolution
+	if (args[0].toLowerCase() === "list" && args[1]?.toLowerCase() === "users") {
+		const text =
+			network.muteList.length === 0
+				? "No users are muted on this network"
+				: `Muted users on this network: ${network.muteList.join(", ")}`;
+		chan.pushMessage(this, new Msg({type: MessageType.NOTICE, text}));
+		return;
+	}
+
+	// A nick in the current channel's user list resolves to a user mute,
+	// ahead of the channel-name resolution below
+	const user = chan.findUser(args[0]);
+
+	if (user) {
+		// IRC nicks are case insensitive
+		if (user.nick.toLowerCase() === network.nick.toLowerCase()) {
+			chan.pushMessage(
+				this,
+				new Msg({
+					type: MessageType.ERROR,
+					text: "You can't mute yourself",
+				})
+			);
+			return;
+		}
+
+		const idx = network.muteList.findIndex(
+			(nick) => nick.toLowerCase() === user.nick.toLowerCase()
+		);
+
+		if (valueToSet) {
+			if (idx !== -1) {
+				chan.pushMessage(
+					this,
+					new Msg({
+						type: MessageType.ERROR,
+						text: "The specified user is already muted",
+					})
+				);
+				return;
+			}
+
+			network.muteList.push(user.nick);
+			chan.pushMessage(
+				this,
+				new Msg({type: MessageType.NOTICE, text: `${user.nick} is now muted`})
+			);
+		} else {
+			if (idx === -1) {
+				chan.pushMessage(
+					this,
+					new Msg({
+						type: MessageType.ERROR,
+						text: "The specified user is not muted",
+					})
+				);
+				return;
+			}
+
+			network.muteList.splice(idx, 1);
+			chan.pushMessage(
+				this,
+				new Msg({type: MessageType.NOTICE, text: `${user.nick} is no longer muted`})
+			);
+		}
+
+		this.save();
+		return;
+	}
+
 	const targets = args_to_channels(network, args);
 
 	if (targets.length !== args.length) {

@@ -87,6 +87,7 @@ export type NetworkConfig = {
 	proxyEnabled: boolean;
 	highlightRegex?: string;
 	ignoreList: IgnoreListItem[];
+	muteList: string[];
 	ftpEnabled: boolean;
 	ftpHost: string;
 	ftpPort: number;
@@ -119,6 +120,7 @@ export type NetworkFormData = {
 	commands?: string[] | string;
 	channels?: ChanConfig[];
 	ignoreList?: IgnoreListItem[];
+	muteList?: string[];
 	proxyEnabled?: boolean;
 	proxyHost?: string;
 	proxyPort?: string | number;
@@ -206,6 +208,7 @@ class Network {
 
 	chanCache!: Chan[];
 	ignoreList!: IgnoreList;
+	muteList!: string[];
 	keepNick!: string | null;
 
 	status!: NetworkStatus;
@@ -291,6 +294,7 @@ class Network {
 
 			chanCache: [],
 			ignoreList: [],
+			muteList: [],
 			keepNick: null,
 			monitorList: [],
 			toBeMonitored: [],
@@ -835,6 +839,7 @@ class Network {
 			name: this.name,
 			nick: this.nick,
 			requestPattern: this.requestPattern,
+			muteList: this.muteList,
 			serverOptions: this.serverOptions,
 			status: this.getNetworkStatus(),
 			channels: this.channels.map((channel) =>
@@ -995,6 +1000,7 @@ class Network {
 			"saslPassword",
 			"commands",
 			"ignoreList",
+			"muteList",
 
 			"proxyHost",
 			"proxyPort",

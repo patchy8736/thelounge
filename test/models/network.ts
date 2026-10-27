@@ -69,6 +69,18 @@ describe("Network", function () {
 			expect(network.channels[0].type).to.equal(ChanType.LOBBY);
 		});
 
+		it("should default muteList to an empty list", function () {
+			const network = new Network();
+
+			expect(network.muteList).to.deep.equal([]);
+		});
+
+		it("should keep muteList from args", function () {
+			const network = new Network({muteList: ["bob"]});
+
+			expect(network.muteList).to.deep.equal(["bob"]);
+		});
+
 		it("should maintain channel reference", function () {
 			const chan = new Chan({
 				name: "#506-bug-fix",
@@ -154,6 +166,7 @@ describe("Network", function () {
 					{name: "PrivateChat", type: "query", muted: true, pinned: false},
 				],
 				ignoreList: [],
+				muteList: [],
 				encodingMap: {},
 				fishGlobalKey: "",
 				fishGlobalKeyMode: "ecb",
@@ -506,6 +519,7 @@ describe("Network", function () {
 					"status",
 					"nick",
 					"name",
+					"muteList",
 					"requestPattern",
 					"serverOptions",
 					"uuid"
