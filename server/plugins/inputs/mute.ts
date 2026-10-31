@@ -50,9 +50,9 @@ const input: PluginInputHandler = function (network, chan, cmd, args) {
 	// User mute listing: takes precedence over nick/channel resolution
 	if (args[0].toLowerCase() === "list" && args[1]?.toLowerCase() === "users") {
 		const text =
-			network.muteList.length === 0
-				? "No users are muted on this network"
-				: `Muted users on this network: ${network.muteList.join(", ")}`;
+			chan.mutedUsers.length === 0
+				? "No users are muted in this channel"
+				: `Muted users in this channel: ${chan.mutedUsers.join(", ")}`;
 		chan.pushMessage(this, new Msg({type: MessageType.NOTICE, text}));
 		return;
 	}
@@ -74,7 +74,7 @@ const input: PluginInputHandler = function (network, chan, cmd, args) {
 			return;
 		}
 
-		const idx = network.muteList.findIndex(
+		const idx = chan.mutedUsers.findIndex(
 			(nick) => nick.toLowerCase() === user.nick.toLowerCase()
 		);
 
@@ -90,7 +90,7 @@ const input: PluginInputHandler = function (network, chan, cmd, args) {
 				return;
 			}
 
-			network.muteList.push(user.nick);
+			chan.mutedUsers.push(user.nick);
 			chan.pushMessage(
 				this,
 				new Msg({type: MessageType.NOTICE, text: `${user.nick} is now muted`})
@@ -107,7 +107,7 @@ const input: PluginInputHandler = function (network, chan, cmd, args) {
 				return;
 			}
 
-			network.muteList.splice(idx, 1);
+			chan.mutedUsers.splice(idx, 1);
 			chan.pushMessage(
 				this,
 				new Msg({type: MessageType.NOTICE, text: `${user.nick} is no longer muted`})

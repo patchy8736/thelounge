@@ -37,6 +37,7 @@ export type SharedChan = {
 	unread: number;
 	highlight: number;
 	muted: boolean;
+	mutedUsers: string[];
 	type: ChanType;
 	state: ChanState;
 	pinned: boolean;

@@ -470,7 +470,7 @@ export function generateUserContextMenu(
 	const canMute =
 		channel.type === ChanType.CHANNEL && user.nick.toLowerCase() !== network.nick.toLowerCase();
 	const isMuted = () =>
-		(network.muteList ?? []).some((m) => m.toLowerCase() === user.nick.toLowerCase());
+		channel.mutedUsers.some((m) => m.toLowerCase() === user.nick.toLowerCase());
 
 	if (canMute) {
 		items.push({
@@ -478,7 +478,7 @@ export function generateUserContextMenu(
 			type: "item",
 			class: "mute",
 			action() {
-				const list = network.muteList ?? (network.muteList = []);
+				const list = channel.mutedUsers;
 				const idx = list.findIndex((m) => m.toLowerCase() === user.nick.toLowerCase());
 				const muted = idx !== -1;
 

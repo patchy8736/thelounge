@@ -69,18 +69,6 @@ describe("Network", function () {
 			expect(network.channels[0].type).to.equal(ChanType.LOBBY);
 		});
 
-		it("should default muteList to an empty list", function () {
-			const network = new Network();
-
-			expect(network.muteList).to.deep.equal([]);
-		});
-
-		it("should keep muteList from args", function () {
-			const network = new Network({muteList: ["bob"]});
-
-			expect(network.muteList).to.deep.equal(["bob"]);
-		});
-
 		it("should maintain channel reference", function () {
 			const chan = new Chan({
 				name: "#506-bug-fix",
@@ -159,14 +147,19 @@ describe("Network", function () {
 				proxyPassword: "",
 				proxyUsername: "",
 				channels: [
-					{name: "#thelounge", key: "", muted: false},
-					{name: "&foobar", key: "", muted: false},
-					{name: "#secret", key: "foo", muted: false},
-					{name: "&secure", key: "bar", muted: true},
-					{name: "PrivateChat", type: "query", muted: true, pinned: false},
+					{name: "#thelounge", key: "", muted: false, mutedUsers: []},
+					{name: "&foobar", key: "", muted: false, mutedUsers: []},
+					{name: "#secret", key: "foo", muted: false, mutedUsers: []},
+					{name: "&secure", key: "bar", muted: true, mutedUsers: []},
+					{
+						name: "PrivateChat",
+						type: "query",
+						muted: true,
+						pinned: false,
+						mutedUsers: [],
+					},
 				],
 				ignoreList: [],
-				muteList: [],
 				encodingMap: {},
 				fishGlobalKey: "",
 				fishGlobalKeyMode: "ecb",
@@ -519,7 +512,6 @@ describe("Network", function () {
 					"status",
 					"nick",
 					"name",
-					"muteList",
 					"requestPattern",
 					"serverOptions",
 					"uuid"

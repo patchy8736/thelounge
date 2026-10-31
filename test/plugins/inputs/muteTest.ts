@@ -20,13 +20,13 @@ function setup() {
 	const network = {
 		nick: "alice",
 		channels: [chan],
-		muteList: [] as string[],
 		getChannel: (name: string) => (name === chan.name ? chan : undefined),
 	};
 
 	const client = {
 		idMsg: 0,
 		attachedClients: {},
+		messageStorage: [],
 		save() {},
 		emit(event: string, data: unknown) {
 			emits.push({event, ...(data as object)});
@@ -45,6 +45,7 @@ function setup() {
 
 	const addChannel = (name: string) => {
 		const extra = new Chan({name, type: ChanType.CHANNEL});
+		extra.users.set("bob", new User({nick: "bob"}));
 		network.channels.push(extra);
 		return extra;
 	};
@@ -56,48 +57,58 @@ function setup() {
 }
 
 describe("mute input command", function () {
-	it("adds a nick in the current channel to the user mute list and confirms", function () {
-		const {network, run, replies} = setup();
+	it("adds a nick in the current channel to the channel mute list and confirms", function () {
+		const {chan, run, replies} = setup();
 
 		run("mute", "bob");
 
-		expect(network.muteList).to.deep.equal(["bob"]);
+		expect(chan.mutedUsers).to.deep.equal(["bob"]);
 		const last = replies().at(-1);
 		expect(last?.text).to.include("bob");
 		expect(last?.text).to.include("muted");
 	});
 
 	it("removes a muted nick with /unmute and confirms", function () {
-		const {network, run, replies} = setup();
+		const {chan, run, replies} = setup();
 		run("mute", "bob");
 
 		run("unmute", "bob");
 
-		expect(network.muteList).to.deep.equal([]);
+		expect(chan.mutedUsers).to.deep.equal([]);
 		expect(replies().at(-1)?.text).to.include("bob");
 		expect(replies().at(-1)?.text).to.include("no longer muted");
 	});
 
 	it("errors when unmuting a nick that is not muted", function () {
-		const {network, run, replies} = setup();
+		const {chan, run, replies} = setup();
 
 		run("unmute", "bob");
 
-		expect(network.muteList).to.deep.equal([]);
+		expect(chan.mutedUsers).to.deep.equal([]);
 		expect(replies().at(-1)?.text).to.include("not muted");
 	});
 
 	it("errors when muting an already muted nick", function () {
-		const {network, run, replies} = setup();
+		const {chan, run, replies} = setup();
 		run("mute", "bob");
 
 		run("mute", "bob");
 
-		expect(network.muteList).to.deep.equal(["bob"]);
+		expect(chan.mutedUsers).to.deep.equal(["bob"]);
 		expect(replies().at(-1)?.text).to.include("already muted");
 	});
 
-	it("lists user mutes with /mute list users", function () {
+	it("does not mute the nick in other channels", function () {
+		const {chan, run, addChannel} = setup();
+		const other = addChannel("#other");
+
+		run("mute", "bob");
+
+		expect(chan.mutedUsers).to.deep.equal(["bob"]);
+		expect(other.mutedUsers).to.deep.equal([]);
+	});
+
+	it("lists user mutes for the current channel with /mute list users", function () {
 		const {run, replies} = setup();
 		run("mute", "bob");
 		run("mute", "carol");
@@ -118,31 +129,31 @@ describe("mute input command", function () {
 	});
 
 	it("matches nicks case-insensitively", function () {
-		const {network, run} = setup();
+		const {chan, run} = setup();
 
 		run("mute", "BOB");
 		run("unmute", "bOb");
 
-		expect(network.muteList).to.deep.equal([]);
+		expect(chan.mutedUsers).to.deep.equal([]);
 	});
 
 	it("resolves a nick over a channel with the same name", function () {
-		const {network, run, addChannel} = setup();
+		const {chan, run, addChannel} = setup();
 		const nameChan = addChannel("bob");
 
 		run("mute", "bob");
 
-		expect(network.muteList).to.deep.equal(["bob"]);
+		expect(chan.mutedUsers).to.deep.equal(["bob"]);
 		expect(nameChan.muted).to.be.false;
 	});
 
 	it("still mutes the current channel with no arguments", function () {
-		const {chan, network, run} = setup();
+		const {chan, run} = setup();
 
 		run("mute", "");
 
 		expect(chan.muted).to.be.true;
-		expect(network.muteList).to.deep.equal([]);
+		expect(chan.mutedUsers).to.deep.equal([]);
 	});
 
 	it("still mutes a named channel with /mute <channel>", function () {
@@ -155,11 +166,11 @@ describe("mute input command", function () {
 	});
 
 	it("refuses to mute your own nick", function () {
-		const {network, run, replies} = setup();
+		const {chan, run, replies} = setup();
 
 		run("mute", "alice");
 
-		expect(network.muteList).to.deep.equal([]);
+		expect(chan.mutedUsers).to.deep.equal([]);
 		expect(replies().at(-1)?.text).to.include("can't mute yourself");
 	});
 });

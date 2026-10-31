@@ -295,6 +295,7 @@ class Client {
 						key: chan.key || "",
 						type: type,
 						muted: chan.muted,
+						mutedUsers: chan.mutedUsers,
 						pinned: chan.pinned,
 					})
 				);
@@ -348,7 +349,6 @@ class Client {
 			commands: commands,
 			channels: channels,
 			ignoreList: args.ignoreList || [],
-			muteList: args.muteList || [],
 
 			proxyEnabled: !!args.proxyEnabled,
 			proxyHost: args.proxyHost || "",

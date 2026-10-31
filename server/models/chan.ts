@@ -15,6 +15,7 @@ export type ChanConfig = {
 	name: string;
 	key?: string;
 	muted?: boolean;
+	mutedUsers?: string[];
 	pinned?: boolean;
 	type?: string;
 };
@@ -31,6 +32,7 @@ class Chan {
 	highlight!: number;
 	users!: Map<string, User>;
 	muted!: boolean;
+	mutedUsers!: string[];
 	type!: ChanType;
 	state!: ChanState;
 	pinned!: boolean;
@@ -61,6 +63,7 @@ class Chan {
 			highlight: 0,
 			users: new Map(),
 			muted: false,
+			mutedUsers: [],
 			pinned: false,
 			userAway: null,
 		});
@@ -228,6 +231,7 @@ class Chan {
 			unread: this.unread,
 			highlight: this.highlight,
 			muted: this.muted,
+			mutedUsers: this.mutedUsers,
 			type: this.type,
 			state: this.state,
 			pinned: this.pinned,
@@ -351,6 +355,10 @@ class Chan {
 
 	setMuteStatus(muted: boolean) {
 		this.muted = !!muted;
+	}
+
+	isUserMuted(nick: string) {
+		return this.mutedUsers.some((muted) => muted.toLowerCase() === nick.toLowerCase());
 	}
 }
 

@@ -33,7 +33,6 @@ export type SharedNetwork = {
 	name: string;
 	nick: string;
 	requestPattern?: string;
-	muteList?: string[];
 	serverOptions: SharedServerOptions;
 	status: SharedNetworkStatus;
 	channels: SharedNetworkChan[];

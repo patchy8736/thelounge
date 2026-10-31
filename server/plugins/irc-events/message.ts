@@ -242,7 +242,7 @@ export default <IrcEventHandler>function (this: Client, irc, network) {
 
 		// User mutes are enforced only in channels: a muted sender's channel
 		// messages are never highlights (queries stay exempt)
-		const senderMuted = chan.type === ChanType.CHANNEL && network.isMuted(data.nick);
+		const senderMuted = chan.type === ChanType.CHANNEL && chan.isUserMuted(data.nick);
 
 		// msg is constructed down here because `from` is being copied in the constructor
 		const msg = new Msg({
