@@ -109,11 +109,12 @@ jobs:
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests
         run: |
+          tags=$(echo "${{ steps.meta.outputs.tags }}" | tr ',\n' '  ')
           docker buildx imagetools create \
-            $(printf -- '--tag %s ' $(echo "${{ steps.meta.outputs.tags }}" | tr ',' ' ')) \
+            $(printf -- '--tag %s ' $tags) \
             $(printf 'ghcr.io/patchy8736/thelounge@sha256:%s ' *)
 
       - name: Inspect image
         run: |
-          first_tag=$(echo "${{ steps.meta.outputs.tags }}" | cut -d, -f1)
+          first_tag=$(echo "${{ steps.meta.outputs.tags }}" | tr ',\n' '  ' | awk '{print $1}')
           docker buildx imagetools inspect "$first_tag"
