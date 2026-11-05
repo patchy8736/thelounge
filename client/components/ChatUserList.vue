@@ -92,6 +92,12 @@
 				</div>
 			</template>
 		</div>
+
+		<div
+			class="panel-splitter"
+			@pointerdown="onSplitterPointerDown"
+			@dblclick="onSplitterDoubleClick"
+		></div>
 	</aside>
 </template>
 
@@ -134,6 +140,7 @@ import {computed, defineComponent, nextTick, PropType, ref} from "vue";
 import type {UserInMessage} from "../../shared/types/msg";
 import type {ClientChan, ClientUser} from "../js/types";
 import {useStore} from "../js/store";
+import {usePanelSplitter} from "../js/helpers/panelSplitter";
 import Username from "./Username.vue";
 
 const modes = {
@@ -372,6 +379,15 @@ export default defineComponent({
 
 		const showStatusIndicators = computed(() => store.state.settings.statusIndicators);
 
+		const {onPointerDown: onSplitterPointerDown, onDoubleClick: onSplitterDoubleClick} =
+			usePanelSplitter({
+				getPanel: () => userlist.value,
+				store,
+				settingName: "userlistWidth",
+				cssVar: "--userlist-width",
+				side: "left",
+			});
+
 		return {
 			filteredUsers,
 			groupedUsers,
@@ -387,6 +403,8 @@ export default defineComponent({
 			hoverUser,
 			removeHoverUser,
 			navigateUserList,
+			onSplitterPointerDown,
+			onSplitterDoubleClick,
 		};
 	},
 });

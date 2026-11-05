@@ -8,7 +8,7 @@ type PanelSplitterOptions = {
 	getPanel: () => HTMLElement | null;
 	store: TypedStore;
 	// Device-local setting (sync: "never") that persists the width; 0 means "theme default"
-	settingName: "sidebarWidth";
+	settingName: "sidebarWidth" | "userlistWidth";
 	cssVar: string;
 	// Which edge of the panel the splitter sits on
 	side: "left" | "right";

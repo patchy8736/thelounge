@@ -26,6 +26,7 @@
 
 	/* Panel widths; overridden inline while dragging the panel splitter */
 	--sidebar-width: 220px;
+	--userlist-width: 180px;
 
 	/* Background color of the main window */
 	--window-bg-color: #fff;
@@ -1277,6 +1278,10 @@ p {
 	right: -3px;
 }
 
+#chat .userlist .panel-splitter {
+	left: -3px;
+}
+
 .panel-splitter:hover,
 .panel-splitter:active {
 	background: rgb(132 206 136 / 40%);
@@ -1863,7 +1868,10 @@ textarea.input {
 
 #chat .userlist {
 	border-left: 1px solid #e7e7e7;
-	width: 180px;
+	position: relative;
+
+	/* Floor mirrors PANEL_MIN_WIDTH in client/js/helpers/panelSplitter.ts */
+	width: clamp(100px, var(--userlist-width), 50%);
 	display: none;
 	flex-direction: column;
 	flex-shrink: 0;
@@ -4288,6 +4296,7 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 		right: 0;
 		transform: translateX(180px);
 		transition: transform 0.2s;
+		width: 180px;
 		z-index: 1;
 	}
 

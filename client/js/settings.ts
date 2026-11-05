@@ -189,6 +189,18 @@ const defaultConfig = {
 			}
 		},
 	},
+	userlistWidth: {
+		// Device-local: 0 means "theme default"; apply clears the inline CSS variable
+		default: 0,
+		sync: "never",
+		apply(store: TypedStore, value: number) {
+			if (value > 0) {
+				document.documentElement.style.setProperty("--userlist-width", `${value}px`);
+			} else {
+				document.documentElement.style.removeProperty("--userlist-width");
+			}
+		},
+	},
 	beautifyBridgedMessages: {
 		default: true,
 	},
