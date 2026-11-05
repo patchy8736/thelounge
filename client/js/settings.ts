@@ -177,6 +177,18 @@ const defaultConfig = {
 	compactSidebar: {
 		default: false,
 	},
+	sidebarWidth: {
+		// Device-local: 0 means "theme default"; apply clears the inline CSS variable
+		default: 0,
+		sync: "never",
+		apply(store: TypedStore, value: number) {
+			if (value > 0) {
+				document.documentElement.style.setProperty("--sidebar-width", `${value}px`);
+			} else {
+				document.documentElement.style.removeProperty("--sidebar-width");
+			}
+		},
+	},
 	beautifyBridgedMessages: {
 		default: true,
 	},

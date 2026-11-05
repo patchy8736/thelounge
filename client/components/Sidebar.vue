@@ -86,6 +86,12 @@
 					></button> </router-link
 			></span>
 		</footer>
+
+		<div
+			class="panel-splitter"
+			@pointerdown="onSplitterPointerDown"
+			@dblclick="onSplitterDoubleClick"
+		></div>
 	</aside>
 </template>
 
@@ -93,6 +99,7 @@
 import {defineComponent, nextTick, onMounted, onUnmounted, PropType, ref} from "vue";
 import {useRoute} from "vue-router";
 import {useStore} from "../js/store";
+import {usePanelSplitter} from "../js/helpers/panelSplitter";
 import NetworkList from "./NetworkList.vue";
 
 export default defineComponent({
@@ -253,6 +260,15 @@ export default defineComponent({
 
 		const isPublic = () => document.body.classList.contains("public");
 
+		const {onPointerDown: onSplitterPointerDown, onDoubleClick: onSplitterDoubleClick} =
+			usePanelSplitter({
+				getPanel: () => sidebar.value,
+				store,
+				settingName: "sidebarWidth",
+				cssVar: "--sidebar-width",
+				side: "right",
+			});
+
 		return {
 			isDevelopment,
 			store,
@@ -263,6 +279,8 @@ export default defineComponent({
 			onTouchMove,
 			onTouchEnd,
 			isPublic,
+			onSplitterPointerDown,
+			onSplitterDoubleClick,
 		};
 	},
 });

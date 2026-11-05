@@ -24,6 +24,9 @@
 	/* Links and link-looking buttons */
 	--link-color: #50a656;
 
+	/* Panel widths; overridden inline while dragging the panel splitter */
+	--sidebar-width: 220px;
+
 	/* Background color of the main window */
 	--window-bg-color: #fff;
 
@@ -1248,12 +1251,41 @@ p {
 #sidebar {
 	display: none;
 	flex-direction: column;
-	width: 220px;
+	position: relative;
+
+	/* Floor mirrors PANEL_MIN_WIDTH in client/js/helpers/panelSplitter.ts */
+	width: clamp(100px, var(--sidebar-width), 50%);
 	max-height: 100%;
 	will-change: transform;
 	color: #b7c5d1;
 
 	/* same as .channel-list-item color */
+}
+
+/* Draggable panel edge; set to drag, double-click to reset to theme default */
+.panel-splitter {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	z-index: 1;
+	width: 6px;
+	cursor: col-resize;
+	touch-action: none;
+}
+
+#sidebar .panel-splitter {
+	right: -3px;
+}
+
+.panel-splitter:hover,
+.panel-splitter:active {
+	background: rgb(132 206 136 / 40%);
+}
+
+/* Set while a splitter drag is active */
+html.panel-resizing,
+html.panel-resizing body {
+	user-select: none;
 }
 
 #viewport.menu-open #sidebar {
@@ -4199,9 +4231,16 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 		height: 100%;
 		position: absolute;
 		left: -220px;
+
+		/* Slide-out keeps the default width on mobile */
+		width: 220px;
 		z-index: 10;
 		transition: transform 160ms;
 		transform: translateZ(0);
+	}
+
+	.panel-splitter {
+		display: none;
 	}
 
 	#sidebar-overlay {
