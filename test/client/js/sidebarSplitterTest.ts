@@ -96,6 +96,19 @@ describe("Sidebar splitter", function () {
 		expect(storedSidebarWidth()).to.equal(100);
 	});
 
+	it("ignores sub-threshold pointer jitter so double-clicks stay on the handle", function () {
+		wrapper = mountSidebar();
+		const splitter = wrapper.find(".panel-splitter");
+
+		// Click jitter: down at 400, wiggle under 3px, up at 401
+		splitter.element.dispatchEvent(pointerEvent("pointerdown", 400));
+		window.dispatchEvent(pointerEvent("pointermove", 401));
+		window.dispatchEvent(pointerEvent("pointerup", 401));
+
+		expect(document.documentElement.style.getPropertyValue("--sidebar-width")).to.equal("");
+		expect(storedSidebarWidth()).to.equal(0);
+	});
+
 	it("double-click resets the sidebar to the theme default width", function () {
 		wrapper = mountSidebar();
 		const {left} = wrapper.find("#sidebar").element.getBoundingClientRect();
