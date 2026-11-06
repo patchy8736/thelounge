@@ -15,9 +15,10 @@ type PanelSplitterOptions = {
 };
 
 // Wire up to `@pointerdown`/`@dblclick` on a .panel-splitter element.
-// Live width goes straight to the document root as an inline custom property
-// (inline beats stylesheets, including user-specified CSS); the value is
-// persisted once, on pointer-up, via the settings store.
+// Live width goes straight to the document root as an inline custom property;
+// the consuming width rules in style.css carry !important so they beat user
+// custom CSS that sets width directly (user !important still wins). The value
+// is persisted once, on pointer-up, via the settings store.
 export function usePanelSplitter(opts: PanelSplitterOptions) {
 	let dragging = false;
 

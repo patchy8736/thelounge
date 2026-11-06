@@ -1254,8 +1254,10 @@ p {
 	flex-direction: column;
 	position: relative;
 
-	/* Floor mirrors PANEL_MIN_WIDTH in client/js/helpers/panelSplitter.ts */
-	width: clamp(100px, var(--sidebar-width), 50%);
+	/* Floor mirrors PANEL_MIN_WIDTH in client/js/helpers/panelSplitter.ts.
+	   !important so the splitter beats user custom CSS (injected after the bundle);
+	   user CSS can still win by using !important itself */
+	width: clamp(100px, var(--sidebar-width), 50%) !important;
 	max-height: 100%;
 	will-change: transform;
 	color: #b7c5d1;
@@ -1870,8 +1872,10 @@ textarea.input {
 	border-left: 1px solid #e7e7e7;
 	position: relative;
 
-	/* Floor mirrors PANEL_MIN_WIDTH in client/js/helpers/panelSplitter.ts */
-	width: clamp(100px, var(--userlist-width), 50%);
+	/* Floor mirrors PANEL_MIN_WIDTH in client/js/helpers/panelSplitter.ts.
+	   !important so the splitter beats user custom CSS (injected after the bundle);
+	   user CSS can still win by using !important itself */
+	width: clamp(100px, var(--userlist-width), 50%) !important;
 	display: none;
 	flex-direction: column;
 	flex-shrink: 0;
@@ -4240,8 +4244,9 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 		position: absolute;
 		left: -220px;
 
-		/* Slide-out keeps the default width on mobile */
-		width: 220px;
+		/* Slide-out keeps the default width on mobile.
+		   !important to override the desktop !important rule above */
+		width: 220px !important;
 		z-index: 10;
 		transition: transform 160ms;
 		transform: translateZ(0);
@@ -4296,7 +4301,9 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 		right: 0;
 		transform: translateX(180px);
 		transition: transform 0.2s;
-		width: 180px;
+
+		/* !important to override the desktop !important rule above */
+		width: 180px !important;
 		z-index: 1;
 	}
 
