@@ -565,6 +565,16 @@ p {
 	/* http://fontawesome.io/icon/list/ */
 }
 
+.channel-list-item[data-type="settings"]::before {
+	content: "\f013";
+
+	/* https://fontawesome.com/icons/gear?style=solid */
+}
+
+a.channel-list-item {
+	color: inherit;
+}
+
 .channel-list-item.has-draft:not(.active, [data-type="lobby"])::before {
 	content: "\f304";
 

@@ -144,6 +144,12 @@
 				:checked="store.state.settings.compactSidebar"
 			/>
 			<SettingToggle
+				name="networkSettingsTab"
+				label="Network settings tab"
+				description="Show a Network settings entry at the bottom of each network's channel list"
+				:checked="store.state.settings.networkSettingsTab"
+			/>
+			<SettingToggle
 				name="jumptoEabled"
 				label="Jump to"
 				description='Show the "Jump to" channel search in the sidebar'

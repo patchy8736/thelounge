@@ -74,6 +74,28 @@ describe("Client", function () {
 		expect(network.channels[3].type).to.equal(ChanType.CHANNEL);
 	});
 
+	it("should rehydrate persisted request pattern and encodings on startup", function () {
+		const manager = new ClientManager();
+		const networkConfig: NetworkConfig = {
+			...commonNetworkConfig,
+			requestPattern: "^\\[(.+?)\\]",
+			encodingMap: {"#channel": "latin1"},
+		};
+		const client = new Client(manager, "test", {
+			log: false,
+			password: "foo",
+			sessions: {},
+			clientSettings: {},
+			networks: [networkConfig],
+		});
+
+		// Startup path: persisted config -> networkFromConfig
+		const network = client.networkFromConfig(networkConfig);
+
+		expect(network.requestPattern).to.equal(networkConfig.requestPattern);
+		expect(network.encodingMap).to.deep.equal(networkConfig.encodingMap);
+	});
+
 	it("should ignore invalid channel types", function () {
 		const manager = new ClientManager();
 		const networkConfig: NetworkConfig = {

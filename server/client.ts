@@ -369,6 +369,9 @@ class Client {
 			ftpPassword: String(args.ftpPassword || ""),
 			ftpTls: !!args.ftpTls,
 			ftpAutoInvite: !!args.ftpAutoInvite,
+
+			requestPattern: String(args.requestPattern || ""),
+			encodingMap: args.encodingMap || {},
 		});
 	}
 

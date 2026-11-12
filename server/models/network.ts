@@ -96,6 +96,7 @@ export type NetworkConfig = {
 	ftpAutoInvite: boolean;
 	// Request pattern: client-side regex matching request lines (ADR 0001)
 	requestPattern?: string;
+	encodingMap?: Record<string, string>;
 };
 
 // Form data coming from network create/edit forms
@@ -138,6 +139,7 @@ export type NetworkFormData = {
 	ftpTls?: boolean;
 	ftpAutoInvite?: boolean;
 	requestPattern?: string;
+	encodingMap?: Record<string, string>;
 };
 
 class Network {

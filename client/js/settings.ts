@@ -177,6 +177,9 @@ const defaultConfig = {
 	compactSidebar: {
 		default: false,
 	},
+	networkSettingsTab: {
+		default: false,
+	},
 	sidebarWidth: {
 		// Device-local: 0 means "theme default"; apply clears the inline CSS variable
 		default: 0,

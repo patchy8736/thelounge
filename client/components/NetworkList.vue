@@ -141,6 +141,17 @@
 						:network="network"
 						:queries="network.channels.filter((c) => c.type === 'query')"
 					/>
+
+					<router-link
+						v-if="store.state.settings.networkSettingsTab && !network.isCollapsed"
+						:to="{name: 'NetworkEdit', params: {uuid: network.uuid}}"
+						class="channel-list-item network-settings-tab"
+						:class="{active: isNetworkSettingsOpen(network)}"
+						:aria-current="isNetworkSettingsOpen(network) ? 'page' : undefined"
+						data-type="settings"
+					>
+						<span class="name">Network settings</span>
+					</router-link>
 				</div>
 			</template>
 		</Draggable>
@@ -227,6 +238,7 @@ import eventbus from "../js/eventbus";
 import {ClientChan, NetChan, type SortableEvent} from "../js/types";
 import {useStore} from "../js/store";
 import {switchToChannel} from "../js/router";
+import {useRoute} from "vue-router";
 import Sortable from "sortablejs";
 
 export default defineComponent({
@@ -240,6 +252,7 @@ export default defineComponent({
 	},
 	setup() {
 		const store = useStore();
+		const route = useRoute();
 		const searchText = ref("");
 		const activeSearchItem = ref<ClientChan | null>();
 		// Number of milliseconds a touch has to last to be considered long
@@ -250,6 +263,9 @@ export default defineComponent({
 		const networklist = ref<HTMLDivElement | null>(null);
 
 		const sidebarWasClosed = ref(false);
+
+		const isNetworkSettingsOpen = (network: {uuid: string}) =>
+			route.name === "NetworkEdit" && route.params.uuid === network.uuid;
 
 		const moveItemInArray = <T,>(array: T[], from: number, to: number) => {
 			const item = array.splice(from, 1)[0];
@@ -554,6 +570,7 @@ export default defineComponent({
 		return {
 			store,
 			networklist,
+			isNetworkSettingsOpen,
 			searchInput,
 			searchText,
 			results,
